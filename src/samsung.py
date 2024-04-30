@@ -20,10 +20,10 @@ class FrameSurfer:
         else:
             return False
 
-    def send_to_tv(self, file_name):
+    def send_to_tv(self, file_name, matte=None):
         with open(file_name, 'rb') as tv_file:
             data = tv_file.read()
-            upload = self.tv.art().upload(data, file_type='JPEG')
+            upload = self.tv.art().upload(data, matte=matte, file_type='JPEG')
         return upload
 
     def set_picture(self, tv_file_name):
