@@ -6,11 +6,13 @@ authors = ["Your Name <you@example.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.10"
 python-dotenv = "^1.0.0"
 requests = "^2.31.0"
 samsungtvws = "^2.5.0"
 pillow = "^10.3.0"
+django = "^5.0.4"
+django-cryptography = "^1.1"
 
 
 [build-system]
