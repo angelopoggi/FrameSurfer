@@ -1,19 +1,12 @@
 from django import forms
+from .models import FrameTV, UnsplashModel
 
-class TopcisForm(forms.Form):
-    OPTIONS = (
-        ('option1', 'Option 1'),
-        ('option2', 'Option 2'),
-        ('option3', 'Option 3'),
-    )
+class APIServiceForm(forms.ModelForm):
+    class Meta:
+        model = UnsplashModel
+        fields = ['name', 'url', 'oauth_token']
 
-    my_choices = forms.MultipleChoiceField(
-        choices=OPTIONS,
-        widget=forms.CheckboxSelectMultiple,
-        label="Select Options",
-    )
-    matt_choices = [
-        ("none", None),
-        ("shadowbox", "shadowbox")
-    ]
-    matt_choice = models.CharField(choices=matt_choices)
+class TVForm(forms.ModelForm):
+    class Meta:
+        model = FrameTV
+        fields = ['name', 'ip_address', 'api_service', 'topics', 'matte_options']

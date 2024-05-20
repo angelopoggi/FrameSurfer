@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load form_filters %}
+
+{% block title %}Add API Service{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4">Add API Service</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_name">Name</label>
+            {{ form.name|add_class:"form-control" }}
+        </div>
+        <div class="form-group">
+            <label for="id_url">API URL</label>
+            {{ form.url|add_class:"form-control" }}
+        </div>
+        <div class="form-group">
+            <label for="id_oauth_token">OAUTH Token</label>
+            {{ form.oauth_token|add_class:"form-control" }}
+        </div>
+        <button type="submit" class="btn btn-primary">Add API Service</button>
+    </form>
+</div>
+{% endblock %}

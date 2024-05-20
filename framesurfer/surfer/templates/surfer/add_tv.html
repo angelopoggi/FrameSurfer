@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load form_filters %}
+
+{% block title %}Add TV{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4">Add TV</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_name">Name</label>
+            {{ form.name|add_class:"form-control" }}
+        </div>
+        <div class="form-group">
+            <label for="id_ip_address">IP Address</label>
+            {{ form.ip_address|add_class:"form-control" }}
+        </div>
+        <div class="form-group">
+            <label for="id_api_service">API Service</label>
+            {{ form.api_service|add_class:"form-control" }}
+        </div>
+        <div class="form-group">
+            <label for="id_topics">Topics</label>
+            {{ form.topics|add_class:"form-control" }}
+        </div>
+        <div class="form-group">
+            <label for="id_matte_options">Matte Options</label>
+            {{ form.matte_options|add_class:"form-control" }}
+        </div>
+        <button type="submit" class="btn btn-primary">Add TV</button>
+    </form>
+</div>
+{% endblock %}

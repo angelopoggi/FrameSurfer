@@ -190,3 +190,9 @@ src/.env
 
 #whatever this MAC file is
 .DS_Store
+
+#SQLITE DB
+/framesurfer/db.sqlite3
+
+#Photos directory
+/framesurfer/photos/

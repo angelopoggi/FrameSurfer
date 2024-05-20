@@ -1,13 +1,13 @@
+import datetime
+
 import requests
-from src.creds import Creds
 from PIL import Image
-from models import UnSplashModel, FrameTV
+from .models import PhotoModel
+from samsungtvws import SamsungTVWS
 
 class UnSplash:
-    def __init__(self, unsplash_name):
-        self.unsplash_name = unsplash_name
-        self.client_id = UnSplashModel.objects.get(name=self.unsplash_name)
-
+    def __init__(self, tv_object):
+        self.tv = tv_object
     def _resize_image(self, image_path):
         # Open the image
         img = Image.open(image_path)
@@ -38,14 +38,14 @@ class UnSplash:
         # Save the image
         resized_img.save(image_path)
 
-    def fetch_random(self):
+    def fetch_random(self, file_path):
         '''
         Fetches a random photo link for download
         :return:
         '''
         url = 'https://api.unsplash.com/photos/random/?w=3840&h=2160&topics=WdChqlsJN9c,6sMVjTLSkeQ&content_filter=high&orientation=landscape'
         header = {
-            "Authorization": f"Client-ID {self.client_id}"
+            "Authorization": f"Client-ID {self.tv.api_service.oauth_token}"
         }
         # params = {
         #     'orientation' : 'landscape',
@@ -60,7 +60,15 @@ class UnSplash:
             data = response.json()
             #download file
             with requests.get(data['links']['download'],stream=True) as download_response:
-                with open(f"photos/{data['id']}.jpg", 'wb') as file:
+                with open(f"{file_path}/{data['id']}.jpg", 'wb') as file:
+                    #save information about the photo
+                    photo = PhotoModel.objects.create(
+                        name=data['id'],
+                        downloaded_at=datetime.datetime.now(),
+                        url=data['urls']['raw'],
+                        tv=self.tv
+                    )
+                    photo.save()
                     for chunk in download_response.iter_content(1024):
                         file.write(chunk)
                         file_name = file.name
@@ -68,4 +76,43 @@ class UnSplash:
             raise Exception(f'Error: {response.status_code}')
         #resize the image
         self._resize_image(file_name)
-        return file_name
+
+class FrameSurfer:
+    def __init__(self,tv_address):
+        self.tv_address = tv_address
+        self.tv = SamsungTVWS(self.tv_address)
+    def _check_power(self):
+        '''checks to see if the TV is in the ON state'''
+        info_output = self.tv.rest_device_info()
+        if info_output['device']['PowerState'] == 'on':
+            return True
+        else:
+            return False
+
+    def _check_art_mode(self):
+        '''check to see if the TV is in Art Mode'''
+        info_output = self.tv.art().get_artmode()
+        if info_output == 'on':
+            return True
+        else:
+            return False
+
+    def send_to_tv(self, file_name, matte=None):
+        with open(file_name, 'rb') as tv_file:
+            data = tv_file.read()
+            upload = self.tv.art().upload(data, matte=matte, file_type='JPEG')
+        return upload
+
+    def set_picture(self, tv_file_name):
+        power_check = self._check_power()
+        art_check = self._check_art_mode()
+        if power_check == True and art_check == True:
+            self.tv.art().select_image(tv_file_name)
+        elif power_check == True and art_check == False:
+            self.tv.art().select_image(tv_file_name, show=False)
+        else:
+            self.tv.art().select_image(tv_file_name, show=False)
+    def change_to_artmode(self):
+        art_check = self._check_art_mode()
+        if art_check == False:
+            self.tv.art().set_artmode(True)

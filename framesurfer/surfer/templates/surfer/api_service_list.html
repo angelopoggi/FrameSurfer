@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}API Services{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <h1 class="mt-4">API Services</h1>
+    <ul class="list-group">
+    {% for service in api_services %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ service.name }} - {{ service.url }}
+        </li>
+    {% endfor %}
+</ul>
+<a href="{% url 'add_api_service' %}" class="btn btn-success mt-4">Add a new API Service</a>
+</div>
+{% endblock %}

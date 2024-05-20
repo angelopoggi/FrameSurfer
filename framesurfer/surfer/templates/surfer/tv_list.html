@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}TV List{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4">TV List</h1>
+    <ul class="list-group">
+        {% for tv in tvs %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ tv.name }} ({{ tv.ip_address }})
+                <div>
+                    <form method="post" action="{% url 'download_photo' tv.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary btn-sm">Download Photo</button>
+                    </form>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'add_tv' %}" class="btn btn-success mt-4">Add a new TV</a>
+</div>
+{% endblock %}

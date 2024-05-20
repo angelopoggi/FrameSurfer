@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %} Downloaded Photos {% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4">Downloaded Photos</h1>
+    <ul class="list-group">
+    {% for photo in photos %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <img src="{{ photo.url }}" alt="Photo" width="200">
+        </li>
+    {% endfor %}
+    </ul>
+{% endblock %}
